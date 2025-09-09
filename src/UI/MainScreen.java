@@ -1,6 +1,5 @@
 package UI;
 
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -55,21 +54,20 @@ public class MainScreen extends JFrame {
         reportsMenu.add(performanceReportItem);
         reportsMenu.add(riskReportItem);
 
-        // Adiciona menus à barra
+       
         menuBar.add(fileMenu);
         menuBar.add(cadastroMenu);
         menuBar.add(reportsMenu);
 
         setJMenuBar(menuBar);
 
-        // Painel principal com abas
+    
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Aba de Dashboard
+     
         JPanel dashboardPanel = createDashboardPanel();
         tabbedPane.addTab("Dashboard", dashboardPanel);
 
-        // Aba de Projetos
         JPanel projectsPanel = createProjectsPanel();
         tabbedPane.addTab("Projetos", projectsPanel);
 
@@ -83,16 +81,13 @@ public class MainScreen extends JFrame {
     private JPanel createDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Título
         JLabel titleLabel = new JLabel("Dashboard - Visão Geral", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Painel com métricas
         JPanel metricsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         metricsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Métricas (exemplos)
         metricsPanel.add(createMetricCard("Projetos Ativos", "15"));
         metricsPanel.add(createMetricCard("Tarefas Pendentes", "42"));
         metricsPanel.add(createMetricCard("Equipes", "5"));
@@ -122,7 +117,6 @@ public class MainScreen extends JFrame {
     private JPanel createProjectsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Projeto");
         JButton editButton = new JButton("Editar");
@@ -134,7 +128,6 @@ public class MainScreen extends JFrame {
 
         panel.add(buttonPanel, BorderLayout.NORTH);
 
-        // Tabela de projetos
         String[] columnNames = {"ID", "Nome", "Status", "Início", "Término Previsto", "Gerente"};
         Object[][] data = {
                 {1, "Sistema de Gestão", "Em Andamento", "2023-01-15", "2023-06-30", "João Silva"},
@@ -150,7 +143,6 @@ public class MainScreen extends JFrame {
         return panel;
     }
 
-    // Métodos para abrir as telas de gerenciamento
     private void openUserManager() {
         UserManagerScreen userManager = new UserManagerScreen();
         userManager.setVisible(true);
