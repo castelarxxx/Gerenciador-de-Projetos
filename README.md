@@ -1,7 +1,3 @@
-Perfeito 🚀
-Vou organizar e formatar seu README em Markdown para que fique padronizado, bem estruturado e fácil de ler no GitHub.
-
-Aqui está a versão revisada e formatada:
 
 ````markdown
 # 📊 Sistema de Gerenciamento de Projetos
