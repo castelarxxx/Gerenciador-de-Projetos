@@ -205,4 +205,4 @@ Verificar se o banco foi criado corretamente
 Este projeto é para fins educacionais e de portfólio.
 
 👨‍💻 Desenvolvido por
-[Seu Nome] - [seu.email@empresa.com]
+Hilary Castelar
