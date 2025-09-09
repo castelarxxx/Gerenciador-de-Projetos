@@ -65,22 +65,22 @@ public class ProjectManagerScreen extends JFrame {
     }
 
     private void addProject(ActionEvent e) {
-        // Implementar diálogo de adicionar projeto
+       
         JOptionPane.showMessageDialog(this, "Funcionalidade de adicionar projeto será implementada aqui.");
     }
 
     private void editProject(ActionEvent e) {
-        // Implementar diálogo de editar projeto
+        
         JOptionPane.showMessageDialog(this, "Funcionalidade de editar projeto será implementada aqui.");
     }
 
     private void deleteProject(ActionEvent e) {
-        // Implementar exclusão de projeto
+       
         JOptionPane.showMessageDialog(this, "Funcionalidade de excluir projeto será implementada aqui.");
     }
 }
 
-// Modelo de tabela para projetos
+
 class ProjectTableModel extends AbstractTableModel {
     private List<Project> projects;
     private String[] columnNames = {"ID", "Nome", "Descrição", "Status", "Início", "Término Previsto", "Gerente"};
