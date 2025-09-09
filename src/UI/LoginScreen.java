@@ -133,8 +133,7 @@ public class LoginScreen extends JFrame {
     }
 
     private void openDashboard(User user) {
-        // Aqui você implementaria a abertura do dashboard principal
-        // Por enquanto, apenas uma mensagem
+        
         JOptionPane.showMessageDialog(null,
                 "Dashboard seria aberto aqui para: " + user.getNomeCompleto(),
                 "Dashboard",
