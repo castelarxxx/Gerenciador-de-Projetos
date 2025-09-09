@@ -10,11 +10,11 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class TaskManagerScreen extends JFrame {
-    private TaskService taskService;  // ← Correção: minúsculo e tipo correto
+    private TaskService taskService;  
     private JTable taskTable;
 
     public TaskManagerScreen() {
-        this.taskService = new TaskService();  // ← Correção: new TaskService()
+        this.taskService = new TaskService();  
         initComponents();
     }
 
@@ -27,7 +27,7 @@ public class TaskManagerScreen extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel de botões
+       
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Nova Tarefa");
         JButton editButton = new JButton("Editar");
@@ -41,7 +41,6 @@ public class TaskManagerScreen extends JFrame {
         buttonPanel.add(refreshButton);
         buttonPanel.add(changeStatusButton);
 
-        // Tabela de tarefas
         taskTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(taskTable);
 
@@ -50,7 +49,6 @@ public class TaskManagerScreen extends JFrame {
 
         add(mainPanel);
 
-        // Configura ações dos botões
         addButton.addActionListener(this::addTask);
         editButton.addActionListener(this::editTask);
         deleteButton.addActionListener(this::deleteTask);
@@ -83,7 +81,7 @@ public class TaskManagerScreen extends JFrame {
     }
 }
 
-// Modelo de tabela para tarefas
+
 class TaskTableModel extends AbstractTableModel {
     private List<Task> tasks;  // ← Correção: sem "model."
     private String[] columnNames = {"ID", "Título", "Descrição", "Projeto", "Responsável", "Status", "Prioridade", "Início Previsto", "Término Previsto"};
@@ -109,7 +107,7 @@ class TaskTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Task task = tasks.get(rowIndex);  // ← Correção: sem "model."
+        Task task = tasks.get(rowIndex); 
         switch (columnIndex) {
             case 0: return task.getId();
             case 1: return task.getTitulo();
@@ -124,7 +122,7 @@ class TaskTableModel extends AbstractTableModel {
         }
     }
 
-    public Task getTaskAt(int row) {  // ← Correção: sem "model."
+    public Task getTaskAt(int row) {  
         return tasks.get(row);
     }
 }
