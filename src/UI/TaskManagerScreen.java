@@ -83,10 +83,10 @@ public class TaskManagerScreen extends JFrame {
 
 
 class TaskTableModel extends AbstractTableModel {
-    private List<Task> tasks;  // ← Correção: sem "model."
+    private List<Task> tasks;  
     private String[] columnNames = {"ID", "Título", "Descrição", "Projeto", "Responsável", "Status", "Prioridade", "Início Previsto", "Término Previsto"};
 
-    public TaskTableModel(List<Task> tasks) {  // ← Correção: sem "model."
+    public TaskTableModel(List<Task> tasks) {  
         this.tasks = tasks;
     }
 
