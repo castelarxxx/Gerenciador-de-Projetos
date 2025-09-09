@@ -28,7 +28,6 @@ public class ProjectManagerScreen extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Projeto");
         JButton editButton = new JButton("Editar");
@@ -40,7 +39,6 @@ public class ProjectManagerScreen extends JFrame {
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
 
-        // Tabela de projetos
         projectTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(projectTable);
 
@@ -49,7 +47,6 @@ public class ProjectManagerScreen extends JFrame {
 
         add(mainPanel);
 
-        // Configura ações dos botões
         addButton.addActionListener(this::addProject);
         editButton.addActionListener(this::editProject);
         deleteButton.addActionListener(this::deleteProject);
