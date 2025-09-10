@@ -135,7 +135,7 @@ src/
 │   ├── util/           # Utilidades (DBConnection)
 │   └── security/       # Segurança (PasswordHasher)
 ├── UI/                 # Interfaces gráficas
-└── resources/          # Recursos (se houver)
+└── resources/          # Recursos 
 ```
 
 ---
