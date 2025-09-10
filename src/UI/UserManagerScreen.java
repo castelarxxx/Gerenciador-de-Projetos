@@ -25,11 +25,9 @@ public class UserManagerScreen extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Painel principal
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel de busca
         JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchField = new JTextField();
         JButton searchButton = new JButton("Buscar");
@@ -38,7 +36,6 @@ public class UserManagerScreen extends JFrame {
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Usuário");
         JButton editButton = new JButton("Editar");
@@ -50,25 +47,21 @@ public class UserManagerScreen extends JFrame {
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
 
-        // Tabela de usuários
         userTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(userTable);
 
-        // Adiciona componentes ao painel principal
         mainPanel.add(searchPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         add(mainPanel);
 
-        // Configura ações dos botões
         addButton.addActionListener(this::addUser);
         editButton.addActionListener(this::editUser);
         deleteButton.addActionListener(this::deleteUser);
         refreshButton.addActionListener(e -> refreshTable());
         searchButton.addActionListener(e -> searchUsers());
 
-        // Carrega dados iniciais
         refreshTable();
     }
 
@@ -147,7 +140,6 @@ public class UserManagerScreen extends JFrame {
     }
 }
 
-// Modelo de tabela para usuários
 class UserTableModel extends AbstractTableModel {
     private java.util.List<User> users;
     private String[] columnNames = {"ID", "Nome", "CPF", "E-mail", "Cargo", "Login", "Perfil", "Ativo"};
