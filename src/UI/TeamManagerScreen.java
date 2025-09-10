@@ -27,7 +27,6 @@ public class TeamManagerScreen extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Nova Equipe");
         JButton editButton = new JButton("Editar");
@@ -41,7 +40,6 @@ public class TeamManagerScreen extends JFrame {
         buttonPanel.add(refreshButton);
         buttonPanel.add(manageMembersButton);
 
-        // Tabela de equipes
         teamTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(teamTable);
 
@@ -50,7 +48,6 @@ public class TeamManagerScreen extends JFrame {
 
         add(mainPanel);
 
-        // Configura ações dos botões
         addButton.addActionListener(this::addTeam);
         editButton.addActionListener(this::editTeam);
         deleteButton.addActionListener(this::deleteTeam);
@@ -83,7 +80,6 @@ public class TeamManagerScreen extends JFrame {
     }
 }
 
-// Modelo de tabela para equipes
 class TeamTableModel extends AbstractTableModel {
     private List<Team> teams;
     private String[] columnNames = {"ID", "Nome", "Descrição", "Data Criação"};
