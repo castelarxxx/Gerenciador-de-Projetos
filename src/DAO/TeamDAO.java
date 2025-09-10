@@ -11,7 +11,6 @@ import java.util.List;
 
 public class TeamDAO {
 
-    // Operações básicas de equipe
     public boolean insert(Team team) {
         String sql = "INSERT INTO teams (nome, descricao) VALUES (?, ?)";
 
@@ -126,7 +125,6 @@ public class TeamDAO {
         return teams;
     }
 
-    // Operações com membros da equipe
     public boolean addMember(int teamId, int userId, String papel) {
         String sql = "INSERT INTO team_members (team_id, user_id, papel_no_time) VALUES (?, ?, ?)";
 
@@ -275,7 +273,6 @@ public class TeamDAO {
         return false;
     }
 
-    // Operações com projetos
     public boolean assignToProject(int teamId, int projectId, String papel, LocalDate inicio, LocalDate fim) {
         String sql = "INSERT INTO project_teams (project_id, team_id, papel_no_projeto, alocado_de, alocado_ate) " +
                 "VALUES (?, ?, ?, ?, ?)";

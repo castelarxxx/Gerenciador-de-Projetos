@@ -42,7 +42,6 @@ public class UserFormDialog extends JDialog {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Formulário
         JPanel formPanel = new JPanel(new GridLayout(8, 2, 5, 5));
 
         formPanel.add(new JLabel("Nome Completo:"));
@@ -78,7 +77,6 @@ public class UserFormDialog extends JDialog {
         ativoCheck.setSelected(true);
         formPanel.add(ativoCheck);
 
-        // Botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton saveButton = new JButton("Salvar");
         JButton cancelButton = new JButton("Cancelar");
@@ -91,7 +89,6 @@ public class UserFormDialog extends JDialog {
 
         add(mainPanel);
 
-        // Ações dos botões
         saveButton.addActionListener(this::saveUser);
         cancelButton.addActionListener(e -> dispose());
     }
@@ -125,9 +122,7 @@ public class UserFormDialog extends JDialog {
                 userToSave = new User();
                 userToSave.setSenhaHash(PasswordHasher.hashPassword(new String(senhaField.getPassword())));
             } else {
-                // Usuário existente
                 userToSave = user;
-                // Se a senha foi alterada, fazer hash da nova senha
                 if (!new String(senhaField.getPassword()).isEmpty()) {
                     userToSave.setSenhaHash(PasswordHasher.hashPassword(new String(senhaField.getPassword())));
                 }

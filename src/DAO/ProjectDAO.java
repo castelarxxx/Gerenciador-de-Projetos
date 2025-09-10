@@ -189,13 +189,11 @@ public class ProjectDAO {
     }
 
     public boolean updateStatus(int projectId, String newStatus, int changedBy, String comment) {
-        // Primeiro, obtém o status atual para registrar no histórico
         Project project = getById(projectId);
         if (project == null) return false;
 
         String oldStatus = project.getStatus();
 
-        // Atualiza o status do projeto
         String updateSql = "UPDATE projects SET status = ? WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -207,7 +205,6 @@ public class ProjectDAO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                // Registra no histórico
                 String historySql = "INSERT INTO project_status_history (project_id, status_antigo, status_novo, alterado_por, comentario) " +
                         "VALUES (?, ?, ?, ?, ?)";
 

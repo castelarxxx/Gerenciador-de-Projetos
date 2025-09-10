@@ -24,7 +24,6 @@ public class MainApp {
             System.out.println("Usuário admin criado: login=admin, senha=admin123");
         }
 
-        // Iniciar a interface de login
         java.awt.EventQueue.invokeLater(() -> {
             new LoginScreen().setVisible(true);
         });

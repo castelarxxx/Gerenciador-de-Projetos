@@ -23,7 +23,6 @@ public class AuthService {
         if (user != null && user.isAtivo() &&
                 PasswordHasher.verifyPassword(password, user.getSenhaHash())) {
 
-            // Criar token de sessão (simplificado)
             String sessionToken = generateSessionToken();
             activeSessions.put(sessionToken, user);
 
@@ -48,7 +47,6 @@ public class AuthService {
         User user = getLoggedUser(sessionToken);
         if (user == null) return false;
 
-        // Mapear role_id para nome de role (simplificado)
         Map<Integer, String> roleMap = new HashMap<>();
         roleMap.put(1, "administrador");
         roleMap.put(2, "gerente");
@@ -56,14 +54,13 @@ public class AuthService {
 
         String userRole = roleMap.get(user.getRoleId());
 
-        // Verificar permissões com base na role
         switch (requiredRole) {
             case "admin":
                 return "administrador".equals(userRole);
             case "gerente":
                 return "administrador".equals(userRole) || "gerente".equals(userRole);
             case "colaborador":
-                return true; // Todos os usuários logados têm permissão de colaborador
+                return true;
             default:
                 return false;
         }
