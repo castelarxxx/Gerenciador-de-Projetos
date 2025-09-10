@@ -15,7 +15,6 @@ public class Project {
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 
-    // Construtores, getters e setters
     public Project() {}
 
     public Project(String nome, String descricao, LocalDate dataInicio,
@@ -28,7 +27,6 @@ public class Project {
         this.status = "planejado";
     }
 
-    // Getters e Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
