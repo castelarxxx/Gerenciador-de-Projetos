@@ -111,7 +111,7 @@ class ProjectTableModel extends AbstractTableModel {
             case 3: return project.getStatus();
             case 4: return project.getDataInicio();
             case 5: return project.getDataTerminoPrevista();
-            case 6: return "Gerente " + project.getGerenteId(); // Você pode buscar o nome do gerente
+            case 6: return "Gerente " + project.getGerenteId();
             default: return null;
         }
     }
