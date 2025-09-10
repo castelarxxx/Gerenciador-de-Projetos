@@ -11,29 +11,24 @@ public class MainScreen extends JFrame {
     }
 
     private void initComponents() {
-        // Configuração dos componentes da interface
         setTitle("Sistema de Gerenciamento de Projetos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null); // Centraliza na tela
 
-        // Criação do menu principal
         JMenuBar menuBar = new JMenuBar();
 
-        // Menu Arquivo
         JMenu fileMenu = new JMenu("Arquivo");
         JMenuItem exitItem = new JMenuItem("Sair");
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);
 
-        // Menu Cadastros
         JMenu cadastroMenu = new JMenu("Cadastros");
         JMenuItem usersItem = new JMenuItem("Usuários");
         JMenuItem projectsItem = new JMenuItem("Projetos");
         JMenuItem teamsItem = new JMenuItem("Equipes");
         JMenuItem tasksItem = new JMenuItem("Tarefas");
 
-        // Adiciona action listeners
         usersItem.addActionListener(e -> openUserManager());
         projectsItem.addActionListener(e -> openProjectManager());
         teamsItem.addActionListener(e -> openTeamManager());
@@ -44,7 +39,6 @@ public class MainScreen extends JFrame {
         cadastroMenu.add(teamsItem);
         cadastroMenu.add(tasksItem);
 
-        // Menu Relatórios
         JMenu reportsMenu = new JMenu("Relatórios");
         JMenuItem projectReportItem = new JMenuItem("Andamento de Projetos");
         JMenuItem performanceReportItem = new JMenuItem("Desempenho de Colaboradores");
