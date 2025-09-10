@@ -18,8 +18,7 @@ public class UserService {
     }
 
     public List<User> searchUsers(String term) {
-        // Implementar busca por nome, email ou login
-        return userDAO.getAll(); // Simplificado para o exemplo
+        return userDAO.getAll(); 
     }
 
     public boolean createUser(User user) {
