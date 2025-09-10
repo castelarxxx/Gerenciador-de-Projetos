@@ -7,7 +7,6 @@ import model.User;
 
 public class MainApp {
     public static void main(String[] args) {
-        
         UserDAO userDAO = new UserDAO();
         User admin = userDAO.getByLogin("admin");
 
@@ -19,7 +18,7 @@ public class MainApp {
                     "Administrador",
                     "admin",
                     PasswordHasher.hashPassword("admin123"),
-                    1 
+                    1 // role_id para administrador
             );
             userDAO.insert(admin);
             System.out.println("Usuário admin criado: login=admin, senha=admin123");

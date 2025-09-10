@@ -1,5 +1,6 @@
 package UI;
 
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,17 +12,21 @@ public class MainScreen extends JFrame {
     }
 
     private void initComponents() {
+
         setTitle("Sistema de Gerenciamento de Projetos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
-        setLocationRelativeTo(null); // Centraliza na tela
+        setLocationRelativeTo(null);
+
 
         JMenuBar menuBar = new JMenuBar();
+
 
         JMenu fileMenu = new JMenu("Arquivo");
         JMenuItem exitItem = new JMenuItem("Sair");
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);
+
 
         JMenu cadastroMenu = new JMenu("Cadastros");
         JMenuItem usersItem = new JMenuItem("Usuários");
@@ -39,6 +44,7 @@ public class MainScreen extends JFrame {
         cadastroMenu.add(teamsItem);
         cadastroMenu.add(tasksItem);
 
+
         JMenu reportsMenu = new JMenu("Relatórios");
         JMenuItem projectReportItem = new JMenuItem("Andamento de Projetos");
         JMenuItem performanceReportItem = new JMenuItem("Desempenho de Colaboradores");
@@ -48,19 +54,18 @@ public class MainScreen extends JFrame {
         reportsMenu.add(performanceReportItem);
         reportsMenu.add(riskReportItem);
 
-       
+
         menuBar.add(fileMenu);
         menuBar.add(cadastroMenu);
         menuBar.add(reportsMenu);
 
         setJMenuBar(menuBar);
 
-    
         JTabbedPane tabbedPane = new JTabbedPane();
 
-     
         JPanel dashboardPanel = createDashboardPanel();
         tabbedPane.addTab("Dashboard", dashboardPanel);
+
 
         JPanel projectsPanel = createProjectsPanel();
         tabbedPane.addTab("Projetos", projectsPanel);
@@ -74,6 +79,7 @@ public class MainScreen extends JFrame {
 
     private JPanel createDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+
 
         JLabel titleLabel = new JLabel("Dashboard - Visão Geral", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -110,6 +116,7 @@ public class MainScreen extends JFrame {
 
     private JPanel createProjectsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
+
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Projeto");
@@ -157,8 +164,8 @@ public class MainScreen extends JFrame {
         taskManager.setVisible(true);
     }
 
+
     public static void main(String[] args) {
-        // Executa a interface na thread de eventos
         SwingUtilities.invokeLater(() -> {
             new MainScreen();
         });

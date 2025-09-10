@@ -28,6 +28,7 @@ public class UserManagerScreen extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+
         JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchField = new JTextField();
         JButton searchButton = new JButton("Buscar");

@@ -35,6 +35,7 @@ public class LoginScreen extends JFrame {
         constraints.insets = new Insets(10, 10, 10, 10);
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
+
         JLabel lblLogin = new JLabel("Login:");
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -45,6 +46,7 @@ public class LoginScreen extends JFrame {
         constraints.gridy = 0;
         constraints.gridwidth = 2;
         panel.add(txtLogin, constraints);
+
 
         JLabel lblPassword = new JLabel("Senha:");
         constraints.gridx = 0;
@@ -57,6 +59,7 @@ public class LoginScreen extends JFrame {
         constraints.gridy = 1;
         constraints.gridwidth = 2;
         panel.add(txtPassword, constraints);
+
 
         btnLogin = new JButton("Login");
         btnCancel = new JButton("Cancelar");
@@ -114,7 +117,7 @@ public class LoginScreen extends JFrame {
                     "Login Bem-sucedido",
                     JOptionPane.INFORMATION_MESSAGE);
 
-         
+
             dispose();
             openDashboard(user);
         } else {
@@ -128,12 +131,9 @@ public class LoginScreen extends JFrame {
     }
 
     private void openDashboard(User user) {
-        
-        JOptionPane.showMessageDialog(null,
-                "Dashboard seria aberto aqui para: " + user.getNomeCompleto(),
-                "Dashboard",
-                JOptionPane.INFORMATION_MESSAGE);
 
-        System.exit(0);
+        MainScreen mainScreen = new MainScreen();
+        mainScreen.setTitle("Dashboard - Bem-vindo, " + user.getNomeCompleto());
+        mainScreen.setVisible(true);
     }
 }
