@@ -63,21 +63,6 @@ Sistema completo para gerenciamento de projetos, equipes e tarefas com controle 
 
 ---
 
-## 📊 Script do Banco de Dados
-
-O banco inclui as seguintes tabelas:
-
-* users – Usuários do sistema
-* roles – Perfis de acesso
-* projects – Projetos
-* teams – Equipes
-* tasks – Tarefas
-* team\_members – Membros das equipes
-* project\_teams – Equipes alocadas em projetos
-* task\_status\_history – Histórico de tarefas
-
----
-
 ## 🔧 Configurações Importantes
 
 * MySQL rodando na porta 3306
