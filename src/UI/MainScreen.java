@@ -12,29 +12,28 @@ public class MainScreen extends JFrame {
     }
 
     private void initComponents() {
-        // Configuração dos componentes da interface
+
         setTitle("Sistema de Gerenciamento de Projetos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
-        setLocationRelativeTo(null); // Centraliza na tela
+        setLocationRelativeTo(null);
 
-        // Criação do menu principal
+
         JMenuBar menuBar = new JMenuBar();
 
-        // Menu Arquivo
+
         JMenu fileMenu = new JMenu("Arquivo");
         JMenuItem exitItem = new JMenuItem("Sair");
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);
 
-        // Menu Cadastros
+
         JMenu cadastroMenu = new JMenu("Cadastros");
         JMenuItem usersItem = new JMenuItem("Usuários");
         JMenuItem projectsItem = new JMenuItem("Projetos");
         JMenuItem teamsItem = new JMenuItem("Equipes");
         JMenuItem tasksItem = new JMenuItem("Tarefas");
 
-        // Adiciona action listeners
         usersItem.addActionListener(e -> openUserManager());
         projectsItem.addActionListener(e -> openProjectManager());
         teamsItem.addActionListener(e -> openTeamManager());
@@ -45,7 +44,7 @@ public class MainScreen extends JFrame {
         cadastroMenu.add(teamsItem);
         cadastroMenu.add(tasksItem);
 
-        // Menu Relatórios
+
         JMenu reportsMenu = new JMenu("Relatórios");
         JMenuItem projectReportItem = new JMenuItem("Andamento de Projetos");
         JMenuItem performanceReportItem = new JMenuItem("Desempenho de Colaboradores");
@@ -55,21 +54,19 @@ public class MainScreen extends JFrame {
         reportsMenu.add(performanceReportItem);
         reportsMenu.add(riskReportItem);
 
-        // Adiciona menus à barra
+
         menuBar.add(fileMenu);
         menuBar.add(cadastroMenu);
         menuBar.add(reportsMenu);
 
         setJMenuBar(menuBar);
 
-        // Painel principal com abas
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Aba de Dashboard
         JPanel dashboardPanel = createDashboardPanel();
         tabbedPane.addTab("Dashboard", dashboardPanel);
 
-        // Aba de Projetos
+
         JPanel projectsPanel = createProjectsPanel();
         tabbedPane.addTab("Projetos", projectsPanel);
 
@@ -83,12 +80,11 @@ public class MainScreen extends JFrame {
     private JPanel createDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Título
+
         JLabel titleLabel = new JLabel("Dashboard - Visão Geral", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Painel com métricas
         JPanel metricsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         metricsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -122,7 +118,7 @@ public class MainScreen extends JFrame {
     private JPanel createProjectsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Painel de botões
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Projeto");
         JButton editButton = new JButton("Editar");
@@ -134,7 +130,6 @@ public class MainScreen extends JFrame {
 
         panel.add(buttonPanel, BorderLayout.NORTH);
 
-        // Tabela de projetos
         String[] columnNames = {"ID", "Nome", "Status", "Início", "Término Previsto", "Gerente"};
         Object[][] data = {
                 {1, "Sistema de Gestão", "Em Andamento", "2023-01-15", "2023-06-30", "João Silva"},
@@ -150,7 +145,6 @@ public class MainScreen extends JFrame {
         return panel;
     }
 
-    // Métodos para abrir as telas de gerenciamento
     private void openUserManager() {
         UserManagerScreen userManager = new UserManagerScreen();
         userManager.setVisible(true);
@@ -171,8 +165,8 @@ public class MainScreen extends JFrame {
         taskManager.setVisible(true);
     }
 
+
     public static void main(String[] args) {
-        // Executa a interface na thread de eventos
         SwingUtilities.invokeLater(() -> {
             new MainScreen();
         });

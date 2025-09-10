@@ -35,7 +35,7 @@ public class LoginScreen extends JFrame {
         constraints.insets = new Insets(10, 10, 10, 10);
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        // Label e campo de login
+
         JLabel lblLogin = new JLabel("Login:");
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -47,7 +47,7 @@ public class LoginScreen extends JFrame {
         constraints.gridwidth = 2;
         panel.add(txtLogin, constraints);
 
-        // Label e campo de senha
+
         JLabel lblPassword = new JLabel("Senha:");
         constraints.gridx = 0;
         constraints.gridy = 1;
@@ -60,7 +60,7 @@ public class LoginScreen extends JFrame {
         constraints.gridwidth = 2;
         panel.add(txtPassword, constraints);
 
-        // Botões
+
         btnLogin = new JButton("Login");
         btnCancel = new JButton("Cancelar");
 
@@ -75,7 +75,6 @@ public class LoginScreen extends JFrame {
 
         add(panel);
 
-        // Event listeners
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,7 +89,6 @@ public class LoginScreen extends JFrame {
             }
         });
 
-        // Enter pressionado no campo de senha também executa login
         txtPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +117,7 @@ public class LoginScreen extends JFrame {
                     "Login Bem-sucedido",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            // Fechar tela de login e abrir dashboard
+
             dispose();
             openDashboard(user);
         } else {
@@ -133,14 +131,9 @@ public class LoginScreen extends JFrame {
     }
 
     private void openDashboard(User user) {
-        // Aqui você implementaria a abertura do dashboard principal
-        // Por enquanto, apenas uma mensagem
-        JOptionPane.showMessageDialog(null,
-                "Dashboard seria aberto aqui para: " + user.getNomeCompleto(),
-                "Dashboard",
-                JOptionPane.INFORMATION_MESSAGE);
 
-        // Encerrar aplicação após teste
-        System.exit(0);
+        MainScreen mainScreen = new MainScreen();
+        mainScreen.setTitle("Dashboard - Bem-vindo, " + user.getNomeCompleto());
+        mainScreen.setVisible(true);
     }
 }
