@@ -124,20 +124,6 @@ Credenciais padrão:
 
 ---
 
-## 🏗️ Estrutura do Projeto
-
-src/
-├── br/com/seuempresa/gerenciador/
-│   ├── model/          # Entidades (User, Project, Task, Team)
-│   ├── dao/            # Acesso a dados (UserDAO, ProjectDAO)
-│   ├── service/        # Lógica de negócio
-│   ├── util/           # Utilidades (DBConnection)
-│   └── security/       # Segurança (PasswordHasher)
-├── UI/                 # Interfaces gráficas
-└── resources/          # Recursos (se houver)
-
----
-
 ## 📊 Script do Banco de Dados
 
 O banco inclui as seguintes tabelas:
