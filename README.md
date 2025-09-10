@@ -214,19 +214,6 @@ java -cp .;mysql-connector-java-8.0.33.jar SuaClasse
 
 ---
 
-## 📝 Licença
-
-Este projeto é para fins educacionais e de portfólio.
-
----
-
-## 👨‍💻 Desenvolvido por
-
-Hilary Castelar
-
----
-
-Quer que eu também crie uma **versão curta (resumida)** do README só com introdução, execução e tecnologias? Assim você pode usar no `package-info` ou em documentação rápida.
 
 
 ### 1. Configurar o Banco de Dados
