@@ -41,4 +41,8 @@ public class UserService {
     public User getUserByLogin(String login) {
         return userDAO.getByLogin(login);
     }
+
+    public List<User> getUsersByRole(int roleId) {
+        return userDAO.getByRoleId(roleId);
+    }
 }

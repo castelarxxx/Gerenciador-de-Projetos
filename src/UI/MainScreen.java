@@ -88,7 +88,6 @@ public class MainScreen extends JFrame {
         JPanel metricsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         metricsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Métricas (exemplos)
         metricsPanel.add(createMetricCard("Projetos Ativos", "15"));
         metricsPanel.add(createMetricCard("Tarefas Pendentes", "42"));
         metricsPanel.add(createMetricCard("Equipes", "5"));
