@@ -152,4 +152,22 @@ public class UserDAO {
 
         return user;
     }
-}
+
+    public List<User> getByRoleId(int roleId) {
+        String sql = "SELECT * FROM users WHERE role_id = ? AND ativo = TRUE";
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, roleId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(extractUserFromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuários por role: " + e.getMessage());
+        }
+        return users;
+    }
+    }

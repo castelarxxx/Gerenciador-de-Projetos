@@ -18,7 +18,8 @@ public class UserService {
     }
 
     public List<User> searchUsers(String term) {
-        return userDAO.getAll(); 
+        // Implementar busca por nome, email ou login
+        return userDAO.getAll(); // Simplificado para o exemplo
     }
 
     public boolean createUser(User user) {
@@ -39,5 +40,9 @@ public class UserService {
 
     public User getUserByLogin(String login) {
         return userDAO.getByLogin(login);
+    }
+
+    public List<User> getUsersByRole(int roleId) {
+        return userDAO.getByRoleId(roleId);
     }
 }
