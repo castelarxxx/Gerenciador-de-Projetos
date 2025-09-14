@@ -15,7 +15,6 @@ public class TeamService {
         this.teamDAO = new TeamDAO();
     }
 
-    // Operações básicas de equipe
     public List<Team> getAllTeams() {
         return teamDAO.getAll();
     }
@@ -43,7 +42,6 @@ public class TeamService {
         return teamDAO.search(searchTerm);
     }
 
-    // Operações com membros da equipe
     public boolean addMemberToTeam(int teamId, int userId, String papel) {
         return teamDAO.addMember(teamId, userId, papel);
     }
