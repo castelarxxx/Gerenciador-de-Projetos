@@ -37,6 +37,7 @@ Sistema completo para gerenciamento de projetos, equipes e tarefas com controle 
 * Andamento de projetos (% concluído)
 * Desempenho por colaborador
 * Alertas de projetos em risco
+* Exporta Relatorio por CSV
 
 ---
 
