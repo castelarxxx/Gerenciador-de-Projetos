@@ -341,23 +341,53 @@ class ProjectTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         return columnNames[column];
     }
-
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Project project = projects.get(rowIndex);
         switch (columnIndex) {
             case 0: return project.getId();
             case 1: return project.getNome();
-            case 2: return project.getDescricao();
-            case 3: return project.getStatus();
-            case 4: return project.getDataInicio();
-            case 5: return project.getDataTerminoPrevista();
-            case 6: return "Gerente ID: " + project.getGerenteId();
+            case 2: return getStatusDisplay(project.getStatus());
+            case 3: return project.getDataInicio() != null ? project.getDataInicio().toString() : "Não definida";
+            case 4: return project.getDataTerminoPrevista() != null ? project.getDataTerminoPrevista().toString() : "Não definida";
+            case 5: return getGerenteDisplay(project.getGerenteId());
             default: return null;
+        }
+    }
+
+    private String getStatusDisplay(String status) {
+        if (status == null) return "Não definido";
+
+        switch (status) {
+            case "planejado": return "📋 Planejado";
+            case "em_andamento": return "🚀 Em Andamento";
+            case "concluido": return "✅ Concluído";
+            case "cancelado": return "❌ Cancelado";
+            default: return status;
+        }
+    }
+
+    private String getGerenteDisplay(int gerenteId) {
+        if (gerenteId <= 0) return "Não atribuído";
+
+        try {
+            UserService userService = new UserService();
+            User gerente = userService.getUserById(gerenteId);
+            return gerente != null ? gerente.getNomeCompleto() : "ID: " + gerenteId;
+        } catch (Exception e) {
+            return "ID: " + gerenteId;
         }
     }
 
     public Project getProjectAt(int row) {
         return projects.get(row);
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+
+    public void setProjects(List<Project> novosProjetos) {
     }
 }

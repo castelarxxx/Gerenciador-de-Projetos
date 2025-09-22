@@ -5,9 +5,12 @@ import Service.ProjectService;
 import Service.TaskService;
 import Service.TeamService;
 import Service.UserService;
+import model.Project;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainScreen extends JFrame {
 
@@ -303,31 +306,135 @@ public class MainScreen extends JFrame {
     private JPanel createProjectsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-
+        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Novo Projeto");
         JButton editButton = new JButton("Editar");
         JButton deleteButton = new JButton("Excluir");
+        JButton refreshButton = new JButton("Atualizar");
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(refreshButton);
 
         panel.add(buttonPanel, BorderLayout.NORTH);
 
-        String[] columnNames = {"ID", "Nome", "Status", "Início", "Término Previsto", "Gerente"};
-        Object[][] data = {
-                {1, "Sistema de Gestão", "Em Andamento", "2023-01-15", "2023-06-30", "João Silva"},
-                {2, "Site Corporativo", "Concluído", "2023-02-01", "2023-04-15", "Maria Santos"},
-                {3, "App Mobile", "Planejado", "2023-05-01", "2023-09-30", "Carlos Oliveira"}
-        };
+        // Buscar projetos do banco de dados
+        List<Project> projetos = getProjetosFromDatabase();
 
-        JTable table = new JTable(data, columnNames);
+        // Criar modelo de tabela com dados reais
+        ProjectTableModel tableModel = new ProjectTableModel(projetos);
+        JTable table = new JTable(tableModel);
+
+        // Configurar a tabela
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setReorderingAllowed(false);
+
+
         JScrollPane scrollPane = new JScrollPane(table);
-
         panel.add(scrollPane, BorderLayout.CENTER);
 
+        // Configurar ações dos botões
+        addButton.addActionListener(e -> adicionarProjeto(tableModel));
+        editButton.addActionListener(e -> editarProjeto(table, tableModel));
+        deleteButton.addActionListener(e -> excluirProjeto(table, tableModel));
+        refreshButton.addActionListener(e -> atualizarTabela(tableModel));
+
         return panel;
+    }
+
+    // Método para buscar projetos do banco
+    private List<Project> getProjetosFromDatabase() {
+        try {
+            ProjectService projectService = new ProjectService();
+            return projectService.getAllProjects();
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar projetos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao carregar projetos do banco de dados.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            return new ArrayList<>();
+        }
+    }
+
+    // Método para atualizar a tabela
+    private void atualizarTabela(ProjectTableModel tableModel) {
+        List<Project> novosProjetos = getProjetosFromDatabase();
+        tableModel.setProjects(novosProjetos);
+        tableModel.fireTableDataChanged();
+        JOptionPane.showMessageDialog(this,
+                "Lista de projetos atualizada!",
+                "Atualização",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // Ação de adicionar projeto
+    private void adicionarProjeto(ProjectTableModel tableModel) {
+        ProjectFormDialog dialog = new ProjectFormDialog(this, null);
+        dialog.setVisible(true);
+        if (dialog.isSaved()) {
+            atualizarTabela(tableModel);
+        }
+    }
+
+    // Ação de editar projeto
+    private void editarProjeto(JTable table, ProjectTableModel tableModel) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            Project projeto = tableModel.getProjectAt(selectedRow);
+            ProjectFormDialog dialog = new ProjectFormDialog(this, projeto);
+            dialog.setVisible(true);
+            if (dialog.isSaved()) {
+                atualizarTabela(tableModel);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um projeto para editar.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    // Ação de excluir projeto
+    private void excluirProjeto(JTable table, ProjectTableModel tableModel) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            Project projeto = tableModel.getProjectAt(selectedRow);
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Tem certeza que deseja excluir o projeto '" + projeto.getNome() + "'?\n" +
+                            "Esta ação também excluirá todas as tarefas associadas.",
+                    "Confirmar Exclusão",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    ProjectService projectService = new ProjectService();
+                    if (projectService.deleteProject(projeto.getId())) {
+                        JOptionPane.showMessageDialog(this, "Projeto excluído com sucesso.");
+                        atualizarTabela(tableModel);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "Erro ao excluir projeto.",
+                                "Erro",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                            "Erro ao excluir projeto: " + e.getMessage(),
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um projeto para excluir.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void openUserManager() {
