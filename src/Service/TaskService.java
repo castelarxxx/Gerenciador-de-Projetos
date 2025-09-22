@@ -34,8 +34,18 @@ public class TaskService {
     }
 
     public boolean createTask(Task task) {
+        if (task.getTitulo() == null || task.getTitulo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Título da tarefa é obrigatório");
+        }
+
+        if (task.getDataInicioPrevista() != null && task.getDataFimPrevista() != null &&
+                task.getDataInicioPrevista().isAfter(task.getDataFimPrevista())) {
+            throw new IllegalArgumentException("Data de início não pode ser após data de término");
+        }
+
         return taskDAO.insert(task);
     }
+
 
     public boolean updateTask(Task task) {
         return taskDAO.update(task);
@@ -48,8 +58,8 @@ public class TaskService {
     public boolean updateTaskStatus(int taskId, String newStatus, int changedBy, String comment) {
         return taskDAO.updateStatus(taskId, newStatus, changedBy, comment);
     }
-
-    public List<Task> searchTasks(String searchTerm) {
-        return taskDAO.search(searchTerm);
-    }
 }
+
+
+
+

@@ -22,7 +22,7 @@ public class MainScreen extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
 
-        JMenu fileMenu = new JMenu("Arquivo");
+        JMenu fileMenu = new JMenu("Opções");
         JMenuItem exitItem = new JMenuItem("Sair");
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);

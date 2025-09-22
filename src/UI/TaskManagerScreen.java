@@ -10,11 +10,11 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class TaskManagerScreen extends JFrame {
-    private TaskService taskService;  
+    private TaskService taskService;
     private JTable taskTable;
 
     public TaskManagerScreen() {
-        this.taskService = new TaskService();  
+        this.taskService = new TaskService();
         initComponents();
     }
 
@@ -27,7 +27,6 @@ public class TaskManagerScreen extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-       
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Nova Tarefa");
         JButton editButton = new JButton("Editar");
@@ -81,12 +80,11 @@ public class TaskManagerScreen extends JFrame {
     }
 }
 
-
 class TaskTableModel extends AbstractTableModel {
-    private List<Task> tasks;  
-    private String[] columnNames = {"ID", "Título", "Descrição", "Projeto", "Responsável", "Status", "Prioridade", "Início Previsto", "Término Previsto"};
+    private List<Task> tasks;
+    private String[] columnNames = {"ID", "Título", "Descrição", "Projeto", "Status", "Prioridade"};
 
-    public TaskTableModel(List<Task> tasks) {  
+    public TaskTableModel(List<Task> tasks) {
         this.tasks = tasks;
     }
 
@@ -107,22 +105,19 @@ class TaskTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Task task = tasks.get(rowIndex); 
+        Task task = tasks.get(rowIndex);
         switch (columnIndex) {
             case 0: return task.getId();
             case 1: return task.getTitulo();
             case 2: return task.getDescricao();
             case 3: return "Projeto " + task.getProjetoId();
-            case 4: return "Responsável " + task.getResponsavelId();
-            case 5: return task.getStatus();
-            case 6: return task.getPrioridade();
-            case 7: return task.getDataInicioPrevista();
-            case 8: return task.getDataFimPrevista();
+            case 4: return task.getStatus() != null ? task.getStatus() : "pendente";
+            case 5: return task.getPrioridade() != null ? task.getPrioridade() : "media";
             default: return null;
         }
     }
 
-    public Task getTaskAt(int row) {  
+    public Task getTaskAt(int row) {
         return tasks.get(row);
     }
 }

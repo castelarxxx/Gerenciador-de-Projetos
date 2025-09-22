@@ -36,13 +36,11 @@ public class TeamManagerScreen extends JFrame {
         JButton addButton = new JButton("Nova Equipe");
         JButton editButton = new JButton("Editar");
         JButton deleteButton = new JButton("Excluir");
-        JButton refreshButton = new JButton("Atualizar");
         JButton manageMembersButton = new JButton("Gerenciar Membros");
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
-        buttonPanel.add(refreshButton);
         buttonPanel.add(manageMembersButton);
 
         teamTable = new JTable();
@@ -56,7 +54,7 @@ public class TeamManagerScreen extends JFrame {
         addButton.addActionListener(this::addTeam);
         editButton.addActionListener(this::editTeam);
         deleteButton.addActionListener(this::deleteTeam);
-        refreshButton.addActionListener(e -> refreshTable());
+      //  refreshButton.addActionListener(e -> refreshTable());
         manageMembersButton.addActionListener(this::manageTeamMembers);
 
         refreshTable();

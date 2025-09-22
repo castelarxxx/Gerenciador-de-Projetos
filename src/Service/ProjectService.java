@@ -31,7 +31,6 @@ public class ProjectService {
     }
 
     public boolean createProject(Project project) {
-        // Validações de negócio
         if (project.getNome() == null || project.getNome().trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do projeto é obrigatório");
         }
