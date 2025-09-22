@@ -82,4 +82,8 @@ public class TeamService {
     public List<Team> getProjectTeams(int projectId) {
         return teamDAO.getTeamsByProject(projectId);
     }
+
+    public List<User> getUsersInTeam(int teamId) {
+        return teamDAO.getUsersInTeam(teamId);
+    }
 }

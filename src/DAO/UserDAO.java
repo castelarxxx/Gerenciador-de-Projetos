@@ -170,4 +170,21 @@ public class UserDAO {
         }
         return users;
     }
+
+    public List<User> getActiveUsers() {
+        String sql = "SELECT * FROM users WHERE ativo = TRUE ORDER BY nome_completo";
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                users.add(extractUserFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuários ativos: " + e.getMessage());
+        }
+        return users;
     }
+}

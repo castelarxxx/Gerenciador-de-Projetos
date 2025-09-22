@@ -45,4 +45,9 @@ public class UserService {
     public List<User> getUsersByRole(int roleId) {
         return userDAO.getByRoleId(roleId);
     }
+
+    public List<User> getActiveUsers() {
+        UserDAO userDAO = new UserDAO();
+        return userDAO.getActiveUsers();
+    }
 }
