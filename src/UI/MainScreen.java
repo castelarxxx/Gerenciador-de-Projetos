@@ -95,12 +95,10 @@ public class MainScreen extends JFrame {
     private JPanel createDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Título
         JLabel titleLabel = new JLabel("Dashboard - Visão Geral", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Buscar dados reais do banco
         int projetosAtivos = getProjetosAtivosCount();
         int tarefasPendentes = getTarefasPendentesCount();
         int totalEquipes = getTotalEquipesCount();
@@ -110,11 +108,9 @@ public class MainScreen extends JFrame {
         int tarefasConcluidas = getTarefasConcluidasCount();
         int tarefasEmAndamento = getTarefasEmAndamentoCount();
 
-        // Painel com métricas
         JPanel metricsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         metricsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Métricas principais com dados reais
         metricsPanel.add(createMetricCard("Projetos Ativos", String.valueOf(projetosAtivos),
                 "Total: " + totalProjetos + " | Concluídos: " + projetosConcluidos, Color.BLUE));
 
@@ -220,7 +216,6 @@ public class MainScreen extends JFrame {
         }
     }
 
-    // Método para criar cards de métricas com subtítulo
     private JPanel createMetricCard(String title, String value, String subtitle, Color color) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createCompoundBorder(
@@ -245,7 +240,6 @@ public class MainScreen extends JFrame {
         card.add(valueLabel, BorderLayout.CENTER);
         card.add(subtitleLabel, BorderLayout.SOUTH);
 
-        // Efeito hover (opcional)
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 card.setBackground(color.brighter().brighter());
@@ -328,14 +322,11 @@ public class MainScreen extends JFrame {
 
         panel.add(buttonPanel, BorderLayout.NORTH);
 
-        // Buscar projetos do banco de dados
         List<Project> projetos = getProjetosFromDatabase();
 
-        // Criar modelo de tabela com dados reais
         ProjectTableModel tableModel = new ProjectTableModel(projetos);
         JTable table = new JTable(tableModel);
 
-        // Configurar a tabela
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
 
@@ -352,7 +343,6 @@ public class MainScreen extends JFrame {
         return panel;
     }
 
-    // Método para buscar projetos do banco
     private List<Project> getProjetosFromDatabase() {
         try {
             ProjectService projectService = new ProjectService();
@@ -367,7 +357,7 @@ public class MainScreen extends JFrame {
         }
     }
 
-    // Método para atualizar a tabela
+
     private void atualizarTabela(ProjectTableModel tableModel) {
         List<Project> novosProjetos = getProjetosFromDatabase();
         tableModel.setProjects(novosProjetos);
@@ -378,7 +368,7 @@ public class MainScreen extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // Ação de adicionar projeto
+
     private void adicionarProjeto(ProjectTableModel tableModel) {
         ProjectFormDialog dialog = new ProjectFormDialog(this, null);
         dialog.setVisible(true);
@@ -478,7 +468,6 @@ public class MainScreen extends JFrame {
             ProjectService projectService = new ProjectService();
             List<Project> projetos = projectService.getAllProjects();
 
-            // Criar relatório
             RelatorioAndamentoProjetosDialog dialog = new RelatorioAndamentoProjetosDialog(this, projetos);
             dialog.setVisible(true);
 
@@ -507,7 +496,6 @@ public class MainScreen extends JFrame {
             JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
             mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-            // Título
             JLabel titleLabel = new JLabel("Relatório de Andamento de Projetos", SwingConstants.CENTER);
             titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
             mainPanel.add(titleLabel, BorderLayout.NORTH);
@@ -642,22 +630,42 @@ public class MainScreen extends JFrame {
             fileChooser.setDialogTitle("Salvar Relatório CSV");
             fileChooser.setSelectedFile(new java.io.File("relatorio_andamento_projetos.csv"));
 
-            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileChooser.getSelectedFile())) {
-                    writer.println(String.join(";", columnNames));
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Arquivos CSV (*.csv)", "csv"));
 
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                java.io.File file = fileChooser.getSelectedFile();
+
+                if (!file.getName().toLowerCase().endsWith(".csv")) {
+                    file = new java.io.File(file.getParent(), file.getName() + ".csv");
+                }
+
+                try (java.io.OutputStreamWriter writer =
+                             new java.io.OutputStreamWriter(
+                                     new java.io.FileOutputStream(file), "UTF-8")) {
+
+                    writer.write('\uFEFF');
+
+                    writer.write(String.join(";", columnNames));
+                    writer.write("\n");
 
                     for (Object[] linha : data) {
-                        StringBuilder sb = new StringBuilder();
-                        for (Object celula : linha) {
-                            if (sb.length() > 0) sb.append(";");
-                            sb.append(celula != null ? celula.toString().replace(";", ",") : "");
+                        for (int i = 0; i < linha.length; i++) {
+                            if (i > 0) writer.write(";");
+
+                            Object celula = linha[i];
+                            String valor = celula != null ? celula.toString() : "";
+
+                            valor = formatarValorCSV(valor);
+                            writer.write(valor);
                         }
-                        writer.println(sb.toString());
+                        writer.write("\n");
                     }
 
+                    writer.flush();
+
                     JOptionPane.showMessageDialog(this,
-                            "Relatório exportado com sucesso!",
+                            "Relatório exportado com sucesso!\nArquivo: " + file.getAbsolutePath(),
                             "Exportação Concluída",
                             JOptionPane.INFORMATION_MESSAGE);
 
@@ -666,9 +674,33 @@ public class MainScreen extends JFrame {
                             "Erro ao exportar relatório: " + e.getMessage(),
                             "Erro",
                             JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
                 }
             }
         }
+
+        private String formatarValorCSV(String valor) {
+            if (valor == null) return "";
+
+            valor = valor.replaceAll("[📋🚀✅❌⭐👍⚠️🔴🟡🟠🔵]", "").trim();
+
+            if (valor.isEmpty()) {
+                valor = valor.replaceAll("[📋🚀✅❌⭐👍⚠️🔴🟡🟠🔵]", "").trim();
+                if (valor.isEmpty()) return "";
+            }
+
+            valor = valor.replace("\"", "\"\"");
+            valor = valor.replace(";", ",");
+            valor = valor.replace("\n", " ").replace("\r", " ");
+
+            // Colocar entre aspas se necessário
+            if (valor.contains(" ") || valor.contains(",") || valor.contains("\"") || valor.contains(";")) {
+                valor = "\"" + valor + "\"";
+            }
+
+            return valor;
+        }
+
     }
 
     private void gerarRelatorioDesempenhoColaboradores() {
@@ -676,7 +708,7 @@ public class MainScreen extends JFrame {
             UserService userService = new UserService();
             TaskService taskService = new TaskService();
 
-            List<User> colaboradores = userService.getUsersByRole(3); // Colaboradores
+            List<User> colaboradores = userService.getUsersByRole(3);
             RelatorioDesempenhoDialog dialog = new RelatorioDesempenhoDialog(this, colaboradores, taskService);
             dialog.setVisible(true);
 
