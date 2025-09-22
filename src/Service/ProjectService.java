@@ -82,4 +82,5 @@ public class ProjectService {
     public int getPlannedProjectsCount() {
         return projectDAO.countByStatus("planejado");
     }
+
 }
