@@ -170,4 +170,51 @@ public class UserDAO {
         }
         return users;
     }
+
+    public List<User> getActiveUsers() {
+        String sql = "SELECT * FROM users WHERE ativo = TRUE ORDER BY nome_completo";
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                users.add(extractUserFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuários ativos: " + e.getMessage());
+        }
+        return users;
     }
+
+    public int countActiveUsers() {
+        String sql = "SELECT COUNT(*) FROM users WHERE ativo = TRUE";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar usuários ativos: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar todos os usuários: " + e.getMessage());
+        }
+        return 0;
+    }
+}

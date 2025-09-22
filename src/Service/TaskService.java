@@ -34,8 +34,18 @@ public class TaskService {
     }
 
     public boolean createTask(Task task) {
+        if (task.getTitulo() == null || task.getTitulo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Título da tarefa é obrigatório");
+        }
+
+        if (task.getDataInicioPrevista() != null && task.getDataFimPrevista() != null &&
+                task.getDataInicioPrevista().isAfter(task.getDataFimPrevista())) {
+            throw new IllegalArgumentException("Data de início não pode ser após data de término");
+        }
+
         return taskDAO.insert(task);
     }
+
 
     public boolean updateTask(Task task) {
         return taskDAO.update(task);
@@ -49,7 +59,23 @@ public class TaskService {
         return taskDAO.updateStatus(taskId, newStatus, changedBy, comment);
     }
 
-    public List<Task> searchTasks(String searchTerm) {
-        return taskDAO.search(searchTerm);
+    public int getPendingTasksCount() {
+        return taskDAO.countByStatus("pendente");
+    }
+
+    public int getInProgressTasksCount() {
+        return taskDAO.countByStatus("em_execucao");
+    }
+
+    public int getCompletedTasksCount() {
+        return taskDAO.countByStatus("concluida");
+    }
+
+    public int getTotalTasksCount() {
+        return taskDAO.countAll();
     }
 }
+
+
+
+

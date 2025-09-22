@@ -3,6 +3,7 @@ package DAO;
 import DAO.DBConnection;
 import model.Team;
 import model.TeamMember;
+import model.User;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -343,5 +344,47 @@ public class TeamDAO {
         }
 
         return team;
+    }
+
+    public List<User> getUsersInTeam(int teamId) {
+        String sql = "SELECT u.* FROM users u " +
+                "INNER JOIN team_members tm ON u.id = tm.user_id " +
+                "WHERE tm.team_id = ? AND u.ativo = TRUE";
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, teamId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setNomeCompleto(rs.getString("nome_completo"));
+                    user.setEmail(rs.getString("email"));
+                    user.setCargo(rs.getString("cargo"));
+                    user.setLogin(rs.getString("login"));
+                    users.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuários da equipe: " + e.getMessage());
+        }
+        return users;
+    }
+
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM teams";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar todas as equipes: " + e.getMessage());
+        }
+        return 0;
     }
 }

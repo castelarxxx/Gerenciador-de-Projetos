@@ -31,7 +31,6 @@ public class ProjectService {
     }
 
     public boolean createProject(Project project) {
-        // Validações de negócio
         if (project.getNome() == null || project.getNome().trim().isEmpty()) {
             throw new IllegalArgumentException("Nome do projeto é obrigatório");
         }
@@ -66,5 +65,21 @@ public class ProjectService {
 
     public double getProjectProgress(int projectId) {
         return projectDAO.calculateProgress(projectId);
+    }
+
+    public int getActiveProjectsCount() {
+        return projectDAO.countByStatus("em_andamento");
+    }
+
+    public int getTotalProjectsCount() {
+        return projectDAO.countAll();
+    }
+
+    public int getCompletedProjectsCount() {
+        return projectDAO.countByStatus("concluido");
+    }
+
+    public int getPlannedProjectsCount() {
+        return projectDAO.countByStatus("planejado");
     }
 }

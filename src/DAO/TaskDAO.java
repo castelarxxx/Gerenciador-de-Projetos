@@ -342,4 +342,36 @@ public class TaskDAO {
 
         return task;
     }
+
+    public int countByStatus(String status) {
+        String sql = "SELECT COUNT(*) FROM tasks WHERE status = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar tarefas por status: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM tasks";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar todas as tarefas: " + e.getMessage());
+        }
+        return 0;
+    }
 }
