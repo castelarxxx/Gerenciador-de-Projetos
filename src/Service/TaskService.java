@@ -58,6 +58,22 @@ public class TaskService {
     public boolean updateTaskStatus(int taskId, String newStatus, int changedBy, String comment) {
         return taskDAO.updateStatus(taskId, newStatus, changedBy, comment);
     }
+
+    public int getPendingTasksCount() {
+        return taskDAO.countByStatus("pendente");
+    }
+
+    public int getInProgressTasksCount() {
+        return taskDAO.countByStatus("em_execucao");
+    }
+
+    public int getCompletedTasksCount() {
+        return taskDAO.countByStatus("concluida");
+    }
+
+    public int getTotalTasksCount() {
+        return taskDAO.countAll();
+    }
 }
 
 

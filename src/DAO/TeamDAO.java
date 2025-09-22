@@ -372,4 +372,19 @@ public class TeamDAO {
         }
         return users;
     }
+
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM teams";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar todas as equipes: " + e.getMessage());
+        }
+        return 0;
+    }
 }

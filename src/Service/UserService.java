@@ -50,4 +50,12 @@ public class UserService {
         UserDAO userDAO = new UserDAO();
         return userDAO.getActiveUsers();
     }
+
+    public int getActiveUsersCount() {
+        return userDAO.countActiveUsers();
+    }
+
+    public int getTotalUsersCount() {
+        return userDAO.countAll();
+    }
 }

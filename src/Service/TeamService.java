@@ -86,4 +86,8 @@ public class TeamService {
     public List<User> getUsersInTeam(int teamId) {
         return teamDAO.getUsersInTeam(teamId);
     }
+
+    public int getTotalTeamsCount() {
+        return teamDAO.countAll();
+    }
 }
