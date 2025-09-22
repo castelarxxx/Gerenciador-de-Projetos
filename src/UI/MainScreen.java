@@ -6,6 +6,8 @@ import Service.TaskService;
 import Service.TeamService;
 import Service.UserService;
 import model.Project;
+import model.Task;
+import model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +59,11 @@ public class MainScreen extends JFrame {
         JMenuItem projectReportItem = new JMenuItem("Andamento de Projetos");
         JMenuItem performanceReportItem = new JMenuItem("Desempenho de Colaboradores");
         JMenuItem riskReportItem = new JMenuItem("Projetos em Risco");
+
+
+        projectReportItem.addActionListener(e -> gerarRelatorioAndamentoProjetos());
+        performanceReportItem.addActionListener(e -> gerarRelatorioDesempenhoColaboradores());
+        riskReportItem.addActionListener(e -> gerarRelatorioProjetosRisco());
 
         reportsMenu.add(projectReportItem);
         reportsMenu.add(performanceReportItem);
@@ -243,6 +250,7 @@ public class MainScreen extends JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 card.setBackground(color.brighter().brighter());
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 card.setBackground(Color.WHITE);
             }
@@ -462,5 +470,443 @@ public class MainScreen extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new MainScreen();
         });
+    }
+
+
+    private void gerarRelatorioAndamentoProjetos() {
+        try {
+            ProjectService projectService = new ProjectService();
+            List<Project> projetos = projectService.getAllProjects();
+
+            // Criar relatório
+            RelatorioAndamentoProjetosDialog dialog = new RelatorioAndamentoProjetosDialog(this, projetos);
+            dialog.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao gerar relatório de andamento: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    class RelatorioAndamentoProjetosDialog extends JDialog {
+        private List<Project> projetos;
+
+        public RelatorioAndamentoProjetosDialog(JFrame parent, List<Project> projetos) {
+            super(parent, "Relatório de Andamento de Projetos", true);
+            this.projetos = projetos;
+            initComponents();
+        }
+
+        private void initComponents() {
+            setSize(800, 600);
+            setLocationRelativeTo(getParent());
+
+            JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Título
+            JLabel titleLabel = new JLabel("Relatório de Andamento de Projetos", SwingConstants.CENTER);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            mainPanel.add(titleLabel, BorderLayout.NORTH);
+
+            String[] columnNames = {"Projeto", "Status", "Progresso", "Tarefas", "Início", "Término", "Dias Restantes"};
+            Object[][] data = gerarDadosRelatorio();
+
+            JTable table = new JTable(data, columnNames);
+            table.setDefaultRenderer(Object.class, new RelatorioTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                                                               boolean isSelected, boolean hasFocus,
+                                                               int row, int column) {
+                    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+
+                    return c;
+                }
+            });
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+
+            JPanel resumoPanel = criarPainelResumo();
+            mainPanel.add(resumoPanel, BorderLayout.SOUTH);
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            JButton exportarButton = new JButton("Exportar para CSV");
+            JButton fecharButton = new JButton("Fechar");
+
+            exportarButton.addActionListener(e -> exportarParaCSV(data, columnNames));
+            fecharButton.addActionListener(e -> dispose());
+
+            buttonPanel.add(exportarButton);
+            buttonPanel.add(fecharButton);
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+            add(mainPanel);
+        }
+
+        private Object[][] gerarDadosRelatorio() {
+            TaskService taskService = new TaskService();
+            Object[][] data = new Object[projetos.size()][7];
+
+            for (int i = 0; i < projetos.size(); i++) {
+                Project projeto = projetos.get(i);
+                List<Task> tarefas = taskService.getTasksByProject(projeto.getId());
+
+                int totalTarefas = tarefas.size();
+                int tarefasConcluidas = (int) tarefas.stream()
+                        .filter(t -> "concluida".equals(t.getStatus()))
+                        .count();
+
+
+                long diasRestantes = projeto.getDataTerminoPrevista() != null ?
+                        java.time.temporal.ChronoUnit.DAYS.between(
+                                java.time.LocalDate.now(),
+                                projeto.getDataTerminoPrevista()
+                        ) : 0;
+
+                data[i][0] = projeto.getNome();
+                data[i][1] = getStatusDisplay(projeto.getStatus());
+                data[i][3] = tarefasConcluidas + "/" + totalTarefas;
+                data[i][4] = projeto.getDataInicio();
+                data[i][5] = projeto.getDataTerminoPrevista();
+                data[i][6] = diasRestantes > 0 ? diasRestantes + " dias" : "Expirado";
+            }
+
+            return data;
+        }
+
+        private JPanel criarPainelResumo() {
+            JPanel panel = new JPanel(new GridLayout(1, 4, 10, 10));
+            panel.setBorder(BorderFactory.createTitledBorder("Resumo Geral"));
+
+            long projetosAtivos = projetos.stream()
+                    .filter(p -> "em_andamento".equals(p.getStatus()))
+                    .count();
+
+            long projetosConcluidos = projetos.stream()
+                    .filter(p -> "concluido".equals(p.getStatus()))
+                    .count();
+
+            long projetosAtrasados = projetos.stream()
+                    .filter(p -> p.getDataTerminoPrevista() != null &&
+                            p.getDataTerminoPrevista().isBefore(java.time.LocalDate.now()) &&
+                            !"concluido".equals(p.getStatus()))
+                    .count();
+
+            panel.add(criarCardResumo("Total Projetos", String.valueOf(projetos.size()), Color.BLUE));
+            panel.add(criarCardResumo("Em Andamento", String.valueOf(projetosAtivos), Color.ORANGE));
+            panel.add(criarCardResumo("Concluídos", String.valueOf(projetosConcluidos), Color.GREEN));
+            panel.add(criarCardResumo("Atrasados", String.valueOf(projetosAtrasados), Color.RED));
+
+            return panel;
+        }
+
+        private JPanel criarCardResumo(String titulo, String valor, Color cor) {
+            JPanel card = new JPanel(new BorderLayout());
+            card.setBorder(BorderFactory.createLineBorder(cor));
+            card.setBackground(Color.WHITE);
+
+            JLabel tituloLabel = new JLabel(titulo, SwingConstants.CENTER);
+            JLabel valorLabel = new JLabel(valor, SwingConstants.CENTER);
+            valorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            valorLabel.setForeground(cor);
+
+            card.add(tituloLabel, BorderLayout.NORTH);
+            card.add(valorLabel, BorderLayout.CENTER);
+
+            return card;
+        }
+
+        private String getStatusDisplay(String status) {
+            switch (status) {
+                case "planejado":
+                    return "📋 Planejado";
+                case "em_andamento":
+                    return "🚀 Em Andamento";
+                case "concluido":
+                    return "✅ Concluído";
+                case "cancelado":
+                    return "❌ Cancelado";
+                default:
+                    return status;
+            }
+        }
+
+        private void exportarParaCSV(Object[][] data, String[] columnNames) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Salvar Relatório CSV");
+            fileChooser.setSelectedFile(new java.io.File("relatorio_andamento_projetos.csv"));
+
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileChooser.getSelectedFile())) {
+                    writer.println(String.join(";", columnNames));
+
+
+                    for (Object[] linha : data) {
+                        StringBuilder sb = new StringBuilder();
+                        for (Object celula : linha) {
+                            if (sb.length() > 0) sb.append(";");
+                            sb.append(celula != null ? celula.toString().replace(";", ",") : "");
+                        }
+                        writer.println(sb.toString());
+                    }
+
+                    JOptionPane.showMessageDialog(this,
+                            "Relatório exportado com sucesso!",
+                            "Exportação Concluída",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                            "Erro ao exportar relatório: " + e.getMessage(),
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private void gerarRelatorioDesempenhoColaboradores() {
+        try {
+            UserService userService = new UserService();
+            TaskService taskService = new TaskService();
+
+            List<User> colaboradores = userService.getUsersByRole(3); // Colaboradores
+            RelatorioDesempenhoDialog dialog = new RelatorioDesempenhoDialog(this, colaboradores, taskService);
+            dialog.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao gerar relatório de desempenho: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    class RelatorioDesempenhoDialog extends JDialog {
+        private List<User> colaboradores;
+        private TaskService taskService;
+
+        public RelatorioDesempenhoDialog(JFrame parent, List<User> colaboradores, TaskService taskService) {
+            super(parent, "Relatório de Desempenho de Colaboradores", true);
+            this.colaboradores = colaboradores;
+            this.taskService = taskService;
+            initComponents();
+        }
+
+        private void initComponents() {
+            setSize(900, 600);
+            setLocationRelativeTo(getParent());
+
+            JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Título
+            JLabel titleLabel = new JLabel("Relatório de Desempenho de Colaboradores", SwingConstants.CENTER);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            mainPanel.add(titleLabel, BorderLayout.NORTH);
+
+
+            // Tabela de desempenho
+            String[] columnNames = {"Colaborador", "Cargo", "Tarefas Totais", "Concluídas", "Em Andamento",
+                    "Atrasadas", "Taxa Conclusão", "Produtividade"};
+            Object[][] data = gerarDadosDesempenho();
+
+            JTable table = new JTable(data, columnNames);
+            table.setDefaultRenderer(Object.class, new DesempenhoTableCellRenderer());
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            JButton fecharButton = new JButton("Fechar");
+            fecharButton.addActionListener(e -> dispose());
+            buttonPanel.add(fecharButton);
+
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+            add(mainPanel);
+        }
+
+        private Object[][] gerarDadosDesempenho() {
+            Object[][] data = new Object[colaboradores.size()][8];
+
+            for (int i = 0; i < colaboradores.size(); i++) {
+                User colaborador = colaboradores.get(i);
+                List<Task> tarefas = taskService.getTasksByUser(colaborador.getId());
+
+                int totalTarefas = tarefas.size();
+                int concluidas = (int) tarefas.stream()
+                        .filter(t -> "concluida".equals(t.getStatus()))
+                        .count();
+                int emAndamento = (int) tarefas.stream()
+                        .filter(t -> "em_execucao".equals(t.getStatus()))
+                        .count();
+                int atrasadas = (int) tarefas.stream()
+                        .filter(t -> t.getDataFimPrevista() != null &&
+                                t.getDataFimPrevista().isBefore(java.time.LocalDate.now()) &&
+                                !"concluida".equals(t.getStatus()))
+                        .count();
+
+                double taxaConclusao = totalTarefas > 0 ? (concluidas * 100.0) / totalTarefas : 0;
+                String produtividade = calcularProdutividade(taxaConclusao);
+
+                data[i][0] = colaborador.getNomeCompleto();
+                data[i][1] = colaborador.getCargo();
+                data[i][2] = totalTarefas;
+                data[i][3] = concluidas;
+                data[i][4] = emAndamento;
+                data[i][5] = atrasadas;
+                data[i][6] = String.format("%.1f%%", taxaConclusao);
+                data[i][7] = produtividade;
+            }
+
+            java.util.Arrays.sort(data, (a, b) -> {
+                double taxaA = Double.parseDouble(((String) a[6]).replace("%", ""));
+                double taxaB = Double.parseDouble(((String) b[6]).replace("%", ""));
+                return Double.compare(taxaB, taxaA);
+            });
+
+            return data;
+        }
+
+        private String calcularProdutividade(double taxaConclusao) {
+            if (taxaConclusao >= 90) return "⭐ Excelente";
+            if (taxaConclusao >= 75) return "👍 Boa";
+            if (taxaConclusao >= 50) return "⚠️ Regular";
+            return "❌ Baixa";
+        }
+    }
+
+
+    private void gerarRelatorioProjetosRisco() {
+        try {
+            ProjectService projectService = new ProjectService();
+            List<Project> projetosRisco = projectService.getProjectsAtRisk();
+
+            RelatorioRiscoDialog dialog = new RelatorioRiscoDialog(this, projetosRisco);
+            dialog.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao gerar relatório de projetos em risco: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    class RelatorioRiscoDialog extends JDialog {
+        private List<Project> projetosRisco;
+
+        public RelatorioRiscoDialog(JFrame parent, List<Project> projetosRisco) {
+            super(parent, "Relatório de Projetos em Risco", true);
+            this.projetosRisco = projetosRisco;
+            initComponents();
+        }
+
+        private void initComponents() {
+            setSize(700, 500);
+            setLocationRelativeTo(getParent());
+
+            JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Título
+            JLabel titleLabel = new JLabel("Projetos em Risco de Atraso", SwingConstants.CENTER);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            titleLabel.setForeground(Color.RED);
+            mainPanel.add(titleLabel, BorderLayout.NORTH);
+
+            if (projetosRisco.isEmpty()) {
+                JLabel semRiscosLabel = new JLabel("🎉 Nenhum projeto em risco identificado!", SwingConstants.CENTER);
+                semRiscosLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                semRiscosLabel.setForeground(Color.GREEN);
+                mainPanel.add(semRiscosLabel, BorderLayout.CENTER);
+            } else {
+                // Tabela de projetos em risco
+                String[] columnNames = {"Projeto", "Gerente", "Data Término", "Dias de Atraso",
+                        "Progresso", "Nível de Risco"};
+                Object[][] data = gerarDadosRisco();
+
+                JTable table = new JTable(data, columnNames);
+                table.setDefaultRenderer(Object.class, new RiscoTableCellRenderer());
+
+                JScrollPane scrollPane = new JScrollPane(table);
+                mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+                // Painel de alertas
+                JPanel alertaPanel = criarPainelAlerta();
+                mainPanel.add(alertaPanel, BorderLayout.SOUTH);
+            }
+
+            JButton fecharButton = new JButton("Fechar");
+            fecharButton.addActionListener(e -> dispose());
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.add(fecharButton);
+            mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+            add(mainPanel);
+        }
+
+        private Object[][] gerarDadosRisco() {
+            TaskService taskService = new TaskService();
+            UserService userService = new UserService();
+            Object[][] data = new Object[projetosRisco.size()][6];
+
+            for (int i = 0; i < projetosRisco.size(); i++) {
+                Project projeto = projetosRisco.get(i);
+                List<Task> tarefas = taskService.getTasksByProject(projeto.getId());
+
+                int totalTarefas = tarefas.size();
+                int tarefasConcluidas = (int) tarefas.stream()
+                        .filter(t -> "concluida".equals(t.getStatus()))
+                        .count();
+                double progresso = totalTarefas > 0 ? (tarefasConcluidas * 100.0) / totalTarefas : 0;
+
+                long diasAtraso = java.time.temporal.ChronoUnit.DAYS.between(
+                        projeto.getDataTerminoPrevista(),
+                        java.time.LocalDate.now()
+                );
+
+                String nivelRisco = calcularNivelRisco(diasAtraso, progresso);
+                String nomeGerente = userService.getUserById(projeto.getGerenteId()).getNomeCompleto();
+
+                data[i][0] = projeto.getNome();
+                data[i][1] = nomeGerente;
+                data[i][2] = projeto.getDataTerminoPrevista();
+                data[i][3] = diasAtraso + " dias";
+                data[i][4] = String.format("%.1f%%", progresso);
+                data[i][5] = nivelRisco;
+            }
+
+            return data;
+        }
+
+        private String calcularNivelRisco(long diasAtraso, double progresso) {
+            if (diasAtraso > 30 || progresso < 25) return "🔴 Crítico";
+            if (diasAtraso > 15 || progresso < 50) return "🟡 Alto";
+            if (diasAtraso > 7 || progresso < 75) return "🟠 Médio";
+            return "🔵 Baixo";
+        }
+
+        private JPanel criarPainelAlerta() {
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBorder(BorderFactory.createTitledBorder("⚠️ Alertas de Risco"));
+            panel.setBackground(new Color(255, 240, 240));
+
+            JTextArea alertaArea = new JTextArea();
+            alertaArea.setEditable(false);
+            alertaArea.setBackground(new Color(255, 240, 240));
+            alertaArea.setText("Os projetos listados estão em risco de atraso. " +
+                    "Recomenda-se revisar os cronogramas e alocar recursos adicionais conforme necessário.");
+            panel.add(alertaArea, BorderLayout.CENTER);
+            return panel;
+        }
     }
 }
